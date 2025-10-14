@@ -43,21 +43,35 @@ namespace Physics_Simulator
             _font = Content.Load<SpriteFont>("DefaultFont");
             ImpactSound = Content.Load<SoundEffect>("pool");
 
-            balls = new List<Ball>
+            balls = new List<Ball>();
+
+            float ballRadius = 15f;
+            float ballDiameter = ballRadius * 2f;
+
+            balls.Add(new Ball(new Vector2(200, 240), new Vector2(0, 0), 0.9f, 0.996f, _texture, 1f, ballRadius));
+
+            Vector2 rackStart = new Vector2(550, 240);
+            int rows = 5;
+            int index = 0;
+
+            for (int row = 0; row < rows; row++)
             {
-                new Ball(new Vector2(700, 200), new Vector2(4, 8), 0.8f, 1F, _texture, 2f, 20f),
-                new Ball(new Vector2(200, 50), new Vector2(-8, 7), 0.8f, 1F, _texture, 0.5f, 10f),
-                new Ball(new Vector2(300, 300), new Vector2(15, 3), 0.8f, 1f, _texture, 8f, 30f),
-                new Ball(new Vector2(100, 200), new Vector2(-6, 0), 0.9f, 1F, _texture, 2f, 20f),
-                new Ball(new Vector2(300, 200), new Vector2(0, 0), 0.9f, 1F, _texture, 5f, 25f),
-                new Ball(new Vector2(500, 200), new Vector2(3, 0), 0.9f, 1f, _texture, 1f, 15f)
-            };
-            for (int i = 0; i < balls.Count; i++)
-            {
-                balls[i].setScale(scale);
+                float yOffset = -row * ballRadius;
+
+                for (int col = 0; col <= row; col++)
+                {
+                    float x = rackStart.X + row * (ballDiameter * 0.87f);
+                    float y = rackStart.Y + (col * ballDiameter) + yOffset;
+
+                    float mass = 1f;
+                    balls.Add(new Ball(new Vector2(x, y), Vector2.Zero, 0.9f, 0.996f, _texture, mass, ballRadius));
+                    index++;
+                }
             }
-            // TODO: use this.Content to load your game content here
+
+            balls[0].velocity = new Vector2(20f, 20f);
         }
+
 
         protected override void Update(GameTime gameTime)
         {
@@ -110,4 +124,5 @@ namespace Physics_Simulator
         }
     }
 }
+
 
