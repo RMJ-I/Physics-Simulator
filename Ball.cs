@@ -5,8 +5,10 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Physics_Simulator
 {
@@ -37,7 +39,6 @@ namespace Physics_Simulator
             }
             float diameter = 2 * r;
             velocity *= friction;
-
             if (position.X + diameter > screenWidth)
             {
                 position.X = screenWidth - diameter;
@@ -109,7 +110,7 @@ namespace Physics_Simulator
                 this.position = c1 - new Vector2(this.r, this.r);
                 other.position = c2 - new Vector2(other.r, other.r);
 
-                volume = MathF.Max(0.1f, impulse / 10f);
+                volume = Math.Clamp(Math.Abs(impulse) / 50f, 0f, 1f);
                 ImpactSoundInstance.Play(volume, 0f, 0f);
             }
         }
@@ -122,10 +123,23 @@ namespace Physics_Simulator
             float dx = mousePosition.X - (ball.position.X + ball.r);
             float dy = mousePosition.Y - (ball.position.Y + ball.r);
 
-            float distanceSquared = 0.4f * (dx * dx + dy * dy);
+            float distanceSquared = (dx * dx + dy * dy);
             return distanceSquared <= ball.r * ball.r;
         }
-
+        public void DragBall(Ball ball)
+        {
+            MouseState mouseState = Mouse.GetState();
+            Point mousePosition = mouseState.Position;
+            Vector2 ballCenter = ball.position + new Vector2(ball.r, ball.r);
+            Vector2 direction = new Vector2(mousePosition.X, mousePosition.Y) - ballCenter;
+            ball.velocity = direction * 0.01f;
+        }
+        public void setScale(float scale)
+        {
+            scale = 1 / (float)Math.Pow(scale, 0.5);
+            r = r * scale;
+            velocity = velocity * scale;
+        }
         public void draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 2 * (int)r, 2 * (int)r), Color.White);
@@ -133,3 +147,4 @@ namespace Physics_Simulator
     }
 
 }
+
