@@ -18,7 +18,7 @@ namespace Physics_Simulator
         SpriteFont _font;
         bool cursorOnBall;
         public SoundEffect ImpactSound;
-
+        float scale = 10f;
 
 
         Texture2D _texture;
@@ -45,13 +45,17 @@ namespace Physics_Simulator
 
             balls = new List<Ball>
             {
-                new Ball(new Vector2(700, 200), new Vector2(4, 8), 0.8f, 1F, _texture, 2f, 40f),
-                new Ball(new Vector2(200, 50), new Vector2(-8, 7), 0.8f, 1F, _texture, 0.5f, 25f),
-                new Ball(new Vector2(300, 300), new Vector2(15, 1), 0.8f, 1f, _texture, 50f, 25f),
-                new Ball(new Vector2(700, 200), new Vector2(-6, 0), 0.9f, 1F, _texture, 2f, 40f),
-                new Ball(new Vector2(300, 200), new Vector2(0, 0), 0.9f, 1F, _texture, 5f, 50f),
-                new Ball(new Vector2(500, 200), new Vector2(3, 0), 0.9f, 1f, _texture, 1f, 20f)
+                new Ball(new Vector2(700, 200), new Vector2(4, 8), 0.8f, 1F, _texture, 2f, 20f),
+                new Ball(new Vector2(200, 50), new Vector2(-8, 7), 0.8f, 1F, _texture, 0.5f, 10f),
+                new Ball(new Vector2(300, 300), new Vector2(15, 3), 0.8f, 1f, _texture, 8f, 30f),
+                new Ball(new Vector2(100, 200), new Vector2(-6, 0), 0.9f, 1F, _texture, 2f, 20f),
+                new Ball(new Vector2(300, 200), new Vector2(0, 0), 0.9f, 1F, _texture, 5f, 25f),
+                new Ball(new Vector2(500, 200), new Vector2(3, 0), 0.9f, 1f, _texture, 1f, 15f)
             };
+            for (int i = 0; i < balls.Count; i++)
+            {
+                balls[i].setScale(scale);
+            }
             // TODO: use this.Content to load your game content here
         }
 
@@ -94,7 +98,7 @@ namespace Physics_Simulator
             {
                 if (balls[i].IsCursorOnBall(balls[i]))
                 {
-                    _spriteBatch.DrawString(_font, $"Speed: {Math.Round(balls[i].velocity.Length(), 2)}\nEnergy: {Math.Round(0.5f * (float)balls[i].m * (float)balls[i].velocity.LengthSquared(), 2)}", new Vector2(0, 0), Color.White);
+                    _spriteBatch.DrawString(_font, $"Speed: {Math.Round(balls[i].velocity.Length() * (float)Math.Pow(scale, 0.5), 2)}\nEnergy: {Math.Round(0.5f * (float)balls[i].m * ((float)balls[i].velocity.LengthSquared() * scale), 2)}", new Vector2(0, 0), Color.White);
                 }
             }
             foreach (var b in balls)
@@ -106,3 +110,4 @@ namespace Physics_Simulator
         }
     }
 }
+
