@@ -33,7 +33,7 @@ namespace Physics_Simulator
         }
         public void update(GameTime gameTime, int screenWidth, int screenHeight)
         {
-            if (velocity.LengthSquared() < 0.02f)
+            if (velocity.LengthSquared() < 0.01f)
             {
                 velocity = Vector2.Zero;
             }
@@ -59,7 +59,6 @@ namespace Physics_Simulator
                 position.Y = 0;
                 velocity.Y *= -restitution;
             }
-
             position += velocity;
         }
         public void Collision(Ball other, SoundEffect ImpactSoundInstance)
@@ -136,15 +135,14 @@ namespace Physics_Simulator
         }
         public void setScale(float scale)
         {
-            scale = 1 / (float)Math.Pow(scale, 0.5);
+            scale = 1 / scale;
             r = r * scale;
             velocity = velocity * scale;
         }
-        public void draw(SpriteBatch spriteBatch)
+        public void draw(SpriteBatch spriteBatch, Color colour)
         {
-            spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 2 * (int)r, 2 * (int)r), Color.White);
+            spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 2 * (int)r, 2 * (int)r), colour);
         }
     }
 
 }
-
