@@ -18,7 +18,7 @@ namespace Physics_Simulator
         SpriteFont _font;
         bool cursorOnBall;
         public SoundEffect ImpactSound;
-        float scale = 10f;
+        float scale = 1f;
 
 
         Texture2D _texture;
@@ -39,7 +39,7 @@ namespace Physics_Simulator
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _texture = Content.Load<Texture2D>("ball");
+            _texture = Content.Load<Texture2D>("ball2");
             _font = Content.Load<SpriteFont>("DefaultFont");
             ImpactSound = Content.Load<SoundEffect>("pool");
 
@@ -48,9 +48,10 @@ namespace Physics_Simulator
             float ballRadius = 15f;
             float ballDiameter = ballRadius * 2f;
 
-            balls.Add(new Ball(new Vector2(200, 240), new Vector2(0, 0), 0.9f, 0.996f, _texture, 1f, ballRadius));
+            float mass = 0.16f;
+            balls.Add(new Ball(new Vector2(200 - ballRadius, 240 - ballRadius), new Vector2(0, 0), 0.9f, 1f, _texture, mass, ballRadius));
 
-            Vector2 rackStart = new Vector2(550, 240);
+            Vector2 rackStart = new Vector2(550, 240 - ballRadius);
             int rows = 5;
             int index = 0;
 
@@ -63,13 +64,12 @@ namespace Physics_Simulator
                     float x = rackStart.X + row * (ballDiameter * 0.87f);
                     float y = rackStart.Y + (col * ballDiameter) + yOffset;
 
-                    float mass = 1f;
-                    balls.Add(new Ball(new Vector2(x, y), Vector2.Zero, 0.9f, 0.996f, _texture, mass, ballRadius));
+                    balls.Add(new Ball(new Vector2(x, y), Vector2.Zero, 0.9f, 1f, _texture, mass, ballRadius));
                     index++;
                 }
             }
 
-            balls[0].velocity = new Vector2(20f, 20f);
+            balls[0].velocity = new Vector2(20f, 0f);
         }
 
 
@@ -85,7 +85,6 @@ namespace Physics_Simulator
             cursorOnBall = false;
             for (int i = 0; i < balls.Count; i++)
             {
-
                 for (int j = i + 1; j < balls.Count; j++)
                 {
                     balls[i].Collision(balls[j], ImpactSound);
@@ -112,11 +111,24 @@ namespace Physics_Simulator
             {
                 if (balls[i].IsCursorOnBall(balls[i]))
                 {
-                    _spriteBatch.DrawString(_font, $"Speed: {Math.Round(balls[i].velocity.Length() * (float)Math.Pow(scale, 0.5), 2)}\nEnergy: {Math.Round(0.5f * (float)balls[i].m * ((float)balls[i].velocity.LengthSquared() * scale), 2)}", new Vector2(0, 0), Color.White);
+                    _spriteBatch.DrawString(_font, $"Speed: {Math.Round(balls[i].velocity.Length() * scale, 2)}\nEnergy: {Math.Round(0.5f * (float)balls[i].m * ((float)balls[i].velocity.LengthSquared() * scale * scale), 2)}", new Vector2(0, 0), Color.White);
                 }
+
+                balls[0].draw(_spriteBatch, Color.White);
+                if (i != 0 && i % 2 == 1 && i != 5)
+                {
+                    balls[i].draw(_spriteBatch, Color.Yellow);
+                }
+                else if (i != 0 && i % 2 == 0 && i != 5)
+                {
+                    balls[i].draw(_spriteBatch, Color.Red);
+                }
+                else if (i == 5)
+                {
+                    balls[i].draw(_spriteBatch, Color.Black);
+                }
+
             }
-            foreach (var b in balls)
-            b.draw(_spriteBatch);
             _spriteBatch.End();
             // TODO: Add your drawing code here
 
@@ -124,5 +136,6 @@ namespace Physics_Simulator
         }
     }
 }
+
 
 
